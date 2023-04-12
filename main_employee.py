@@ -103,7 +103,6 @@ try:
     with open("./employees.csv") as f:
         company_name = f.readline().strip()
         id_counter = int(f.readline().strip())
-        employees.append()
         for line in f.readlines():
             values = line.strip().split(",")
             employees.append(Employee(int(values[0]),values[1],values[2],values[3],int(values[4]),values[5]))
@@ -111,15 +110,13 @@ except FileNotFoundError:
     while True:
         company_name = input("What is the name of your company? ")
         if not company_name:
-            print("Company name cannot be empty.")
+            print("Company name cannot be empty.\n")
             continue
-        else:
-            print(f"\nWelcome, {company_name}.\n")
-            break
+        break
     id_counter = 1
     employees = []
 except io.UnsupportedOperation:
-    print("Something went wrong :/")
+    print("Something went wrong :/\n")
 
 def add_new_employee():
     global employees
@@ -145,6 +142,8 @@ def update_employee():
             e_id = input(": ")
             if e_id == "#":
                 break
+            if not e_id.isnumeric():
+                raise ValueError
             employee = None
             for e in employees:
                 if int(e_id) == e.get_id():
@@ -152,8 +151,10 @@ def update_employee():
             if not employee:
                 raise InvalidChoice
         except InvalidChoice:
-            print("Invalid employee id!\n")
+            print("Invalid employee id.\n")
             continue
+        except ValueError:
+            print("Employee id must be a number.\n")
         
         while True:
             print("\nPlease select a option:")
@@ -163,7 +164,10 @@ def update_employee():
             print("4. Change department")
             print("5. Exit\n")
             try:
-                choice = int(input("Enter your choice: "))
+                choice = input("Enter your choice: ")
+                if not choice.isnumeric():
+                    raise ValueError
+                choice = int(choice)
                 if choice < 1 or choice > 5:
                     raise InvalidChoice
             except InvalidChoice:
@@ -201,14 +205,21 @@ def remove_employee():
             e_id = input(": ")
             if e_id == "#":
                 break
+            if not e_id.isnumeric():
+                raise ValueError
+            employee = None
             for i in range(len(employees)):
                 if int(e_id) == employees[i].get_id():
                     print(f"\n{employees[i].get_first_name()} {employees[i].get_last_name()} was successfully removed.")
-                    employees.pop(i)
+                    employee = employees.pop(i)
                     break
-        except ValueError:
-            print("Invalid employee id!\n")
+            if not employee:
+                raise InvalidChoice
+        except InvalidChoice:
+            print("Invalid employee id.\n")
             continue
+        except ValueError:
+            print("Employee id must be a number.\n")
 
 def list_employees():
     global company_name
@@ -218,7 +229,8 @@ def list_employees():
     print()
 
 while True:
-    print("\nPlease select a option:")
+    print(f"\nWelcome, {company_name}.\n")
+    print("Please select a option:")
     print("1. Add a new employee")
     print("2. Update an existing employee")
     print("3. Remove an employee")
@@ -226,11 +238,17 @@ while True:
     print("5. Exit\n")
 
     try:
-        choice = int(input("Enter your choice: "))
+        choice = input("Enter your choice: ")
+        if not choice.isnumeric():
+            raise ValueError
+        choice = int(choice)
         if choice < 1 or choice > 5:
             raise InvalidChoice
     except InvalidChoice:
         print("Invalid choice. Please enter a number between 1 and 5.\n")
+        continue
+    except ValueError:
+        print("Choice must be a number.\n")
         continue
 
     if choice == 1:
