@@ -1,5 +1,6 @@
 import io
 import employee
+import department
 
 class InvalidChoice(Exception):
     pass
@@ -141,14 +142,16 @@ while True:
     print("2. Update an existing employee")
     print("3. Remove an employee")
     print("4. Show all employees")
-    print("5. Exit\n")
+    print("5. Add a new department")
+    print("6. Show department info")
+    print("7. Exit\n")
 
     try:
         choice = input("Enter your choice: ")
         if not choice.isnumeric():
             raise ValueError
         choice = int(choice)
-        if choice < 1 or choice > 5:
+        if choice < 1 or choice > 7:
             raise InvalidChoice
     except InvalidChoice:
         print("Invalid choice. Please enter a number between 1 and 5.\n")
@@ -168,6 +171,12 @@ while True:
 
     elif choice == 4:
         list_employees()
+
+    elif choice == 5:
+        print("to be implemented\n")
+
+    elif choice == 6:
+        print("to be implemented\n")
 
     else:
         with open("./employees.csv", "w") as f:
