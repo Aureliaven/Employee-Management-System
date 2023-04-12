@@ -1,5 +1,5 @@
 import io
-import employee
+import employee as emp
 import department
 
 class InvalidChoice(Exception):
@@ -12,7 +12,7 @@ try:
         id_counter = int(f.readline().strip())
         for line in f.readlines():
             values = line.strip().split(",")
-            employees.append(employee.Employee(int(values[0]),values[1],values[2],values[3],int(values[4]),values[5]))
+            employees.append(emp.Employee(int(values[0]),values[1],values[2],values[3],int(values[4]),values[5]))
 except FileNotFoundError:
     while True:
         company_name = input("What is the name of your company? ")
@@ -28,8 +28,9 @@ except io.UnsupportedOperation:
 def add_new_employee():
     global employees
     global id_counter
-    employee = employee.Employee()
-    employee.set_new_id()
+    employee = emp.Employee()
+    employee.set_id(id_counter)
+    id_counter += 1
     employee.set_first_name()
     employee.set_last_name()
     employee.set_join_date()
