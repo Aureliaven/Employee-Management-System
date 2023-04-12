@@ -38,7 +38,7 @@ except FileNotFoundError:
 except io.UnsupportedOperation:
     print("Something went wrong :/\n")
 
-def add_new_employee():
+def add_employee():
     global employees
     global eid_counter
     employee = emp.Employee()
@@ -57,8 +57,8 @@ def update_employee():
     while True:
         print("\nWhich employee would you like to update?\n")
         for e in employees:
-            print(f"{e.get_id()}. {e}")
-        print("#. Exit\n")
+            print(f"{e.get_id()} - {e}")
+        print("# - Exit\n")
         try:
             e_id = input(": ")
             if e_id == "#":
@@ -79,13 +79,15 @@ def update_employee():
         
         while True:
             print("\nPlease select a option:")
-            print("1. Change first name")
-            print("2. Change last name")
-            print("3. Change salary")
-            print("4. Change department")
-            print("5. Exit\n")
+            print("1 - Change first name")
+            print("2 - Change last name")
+            print("3 - Change salary")
+            print("4 - Change department")
+            print("# - Exit\n")
             try:
                 choice = input("Enter your choice: ")
+                if choice == "#":
+                    break
                 if not choice.isnumeric():
                     raise ValueError
                 choice = int(choice)
@@ -111,12 +113,8 @@ def update_employee():
                 print(f"\nSetting new department for {employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}).")
                 employee.set_department()
 
-            else:
-                break
-
 def remove_employee():
     global employees
-    print(employees)
     while True:
         print("\nWhich employee would you like to remove?\n")
         for e in employees:
@@ -161,6 +159,89 @@ def add_department():
     departments.append(department)
     print(f"\nThe {department.get_name()} department (ID {department.get_id()}) was added.\n")
 
+def update_department():
+    global departments
+    while True:
+        print("\nWhich department would you like to update?\n")
+        for d in departments:
+            print(f"{d.get_id()} - {d}")
+        print("# - Exit\n")
+        try:
+            d_id = input(": ")
+            if d_id == "#":
+                break
+            if not d_id.isnumeric():
+                raise ValueError
+            department = None
+            for d in departments:
+                if int(d_id) == d.get_id():
+                    department = d
+            if not department:
+                raise InvalidChoice
+        except InvalidChoice:
+            print("Invalid department id.\n")
+            continue
+        except ValueError:
+            print("Department id must be a number.\n")
+        
+        while True:
+            print("\nPlease select a option:")
+            print("1 - Change department name")
+            print("2 - Change annual budget")
+            print("3 - Change phone number")
+            print("# - Exit\n")
+            try:
+                choice = input("Enter your choice: ")
+                if choice == "#":
+                    break
+                if not choice.isnumeric():
+                    raise ValueError
+                choice = int(choice)
+                if choice < 1 or choice > 3:
+                    raise InvalidChoice
+            except InvalidChoice:
+                print("Invalid choice. Please enter a number between 1 and 3.\n")
+                continue
+
+            if choice == 1:
+                print(f"\nSetting new name for {department.get_name()} (ID ({department.get_id()}).")
+                department.set_name()
+
+            elif choice == 2:
+                print(f"\nSetting new annual budget for {department.get_name()} (ID ({department.get_id()}).")
+                department.set_budget()
+
+            elif choice == 3:
+                print(f"\nSetting new phone number for {department.get_name()} (ID ({department.get_id()}).")
+                department.set_phone()
+
+def remove_department():
+    global departments
+    while True:
+        print("\nWhich department would you like to remove?\n")
+        for d in departments:
+            print(f"{d.get_id()} - {d}")
+        print("# - Exit\n")
+        try:
+            d_id = input(": ")
+            if d_id == "#":
+                break
+            if not d_id.isnumeric():
+                raise ValueError
+            department = None
+            for i in range(len(departments)):
+                if int(d_id) == departments[i].get_id():
+                    print(f"\n{departments[i].get_name()} was successfully removed.")
+                    department = departments.pop(i)
+                    break
+            if not department:
+                raise InvalidChoice
+        except InvalidChoice:
+            print("Invalid department id.\n")
+            continue
+        except ValueError:
+            print("Department id must be a number.\n")
+
 def list_departments():
     global company_name
     print(f"\n{company_name} departments: \n")
@@ -171,56 +252,106 @@ def list_departments():
 while True:
     print(f"\nWelcome, {company_name}.\n")
     print("Please select a option:")
-    print("1. Add a new employee")
-    print("2. Update an existing employee")
-    print("3. Remove an employee")
-    print("4. Show all employees")
-    print("5. Add a new department")
-    print("6. Show all departments")
-    print("7. Exit\n")
+    print("1 - View/modify employees")
+    print("2 - View/modify departments")
+    print("# - Exit\n")
 
     try:
         choice = input("Enter your choice: ")
+        if choice == "#":
+            with open("./employees.csv", "w") as f:
+                f.write(company_name + "\n")
+                f.write(str(eid_counter) + "\n")
+                for e in employees:
+                    f.write(f"{e.get_id()},{e.get_first_name()},{e.get_last_name()},{e.get_join_date()},{e.get_salary()},{e.get_department()}\n")
+            print("\nEmployee info saved to file.")
+            with open("./departments.csv", "w") as f:
+                f.write(str(did_counter) + "\n")
+                for d in departments:
+                    f.write(f"{d.get_id()},{d.get_name()},{d.get_budget()},{d.get_phone()}\n")    
+            print("Department info saved to file.\n")
+            break
         if not choice.isnumeric():
             raise ValueError
         choice = int(choice)
-        if choice < 1 or choice > 7:
+        if choice < 1 or choice > 2:
             raise InvalidChoice
     except InvalidChoice:
-        print("Invalid choice. Please enter a number between 1 and 5.\n")
+        print("Invalid choice. Please enter 1 or 2.\n")
         continue
     except ValueError:
-        print("Choice must be a number.\n")
+        print("Choice must be a number (1 or 2).\n")
         continue
 
     if choice == 1:
-        add_new_employee()
+        while True:
+            print("\nPlease select an option:")
+            print("1 - Add an employee")
+            print("2 - Update employee info")
+            print("3 - Remove an employee")
+            print("4 - View all employees")
+            print("# - Exit")
+            try:
+                choice = input("Enter your choice: ")
+                if choice == "#":
+                    break
+                if not choice.isnumeric():
+                    raise ValueError
+                choice = int(choice)
+                if choice < 1 or choice > 4:
+                    raise InvalidChoice
+            except InvalidChoice:
+                print("Invalid choice. Please enter a number between 1 and 4.\n")
+                continue
+            except ValueError:
+                print("Choice must be a number.\n")
+                continue
+
+            if choice == 1:
+                add_employee()
+            
+            elif choice == 2:
+                update_employee()
+
+            elif choice == 3:
+                remove_employee()
+
+            elif choice == 4:
+                list_employees()
+
 
     elif choice == 2:
-        update_employee()
+        while True:
+            print("\nPlease select an option:")
+            print("1 - Add a department")
+            print("2 - Update department info")
+            print("3 - Remove a department")
+            print("4 - View all departments")
+            print("# - Exit")
+            try:
+                choice = input("Enter your choice: ")
+                if choice == "#":
+                    break
+                if not choice.isnumeric():
+                    raise ValueError
+                choice = int(choice)
+                if choice < 1 or choice > 4:
+                    raise InvalidChoice
+            except InvalidChoice:
+                print("Invalid choice. Please enter a number between 1 and 4.\n")
+                continue
+            except ValueError:
+                print("Choice must be a number.\n")
+                continue
+            
+            if choice == 1:
+                add_department()
+            
+            elif choice == 2:
+                update_department()
 
-    elif choice == 3:
-        remove_employee()
+            elif choice == 3:
+                remove_department()
 
-    elif choice == 4:
-        list_employees()
-
-    elif choice == 5:
-        add_department()
-
-    elif choice == 6:
-        list_departments()
-
-    else:
-        with open("./employees.csv", "w") as f:
-            f.write(company_name + "\n")
-            f.write(str(eid_counter) + "\n")
-            for e in employees:
-                f.write(f"{e.get_id()},{e.get_first_name()},{e.get_last_name()},{e.get_join_date()},{e.get_salary()},{e.get_department()}\n")
-        print("\nEmployee info saved to file.\n")
-        with open("./departments.csv", "w") as f:
-            f.write(str(did_counter) + "\n")
-            for d in departments:
-                f.write(f"{d.get_id()},{d.get_name()},{d.get_budget()},{d.get_phone()}\n")
-        print("\nDepartment info saved to file.\n")
-        break
+            elif choice == 4:
+                list_departments()
