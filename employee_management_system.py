@@ -1,15 +1,16 @@
 import io
 import employee as emp
-import department
+import department as dep
 
 class InvalidChoice(Exception):
     pass
 
 employees = []
+departments = []
 try:
     with open("./employees.csv") as f:
         company_name = f.readline().strip()
-        id_counter = int(f.readline().strip())
+        eid_counter = int(f.readline().strip())
         for line in f.readlines():
             values = line.strip().split(",")
             employees.append(emp.Employee(int(values[0]),values[1],values[2],values[3],int(values[4]),values[5]))
@@ -20,17 +21,29 @@ except FileNotFoundError:
             print("Company name cannot be empty.\n")
             continue
         break
-    id_counter = 1
+    eid_counter = 1
     employees = []
+except io.UnsupportedOperation:
+    print("Something went wrong :/\n")
+
+try:
+    with open("./departments.csv") as f:
+        did_counter = int(f.readline().strip())
+        for line in f.readlines():
+            values = line.strip().split(",")
+            departments.append(dep.Department(int(values[0]),values[1],int(values[2]),values[3]))
+except FileNotFoundError:
+    did_counter = 1
+    departments = []
 except io.UnsupportedOperation:
     print("Something went wrong :/\n")
 
 def add_new_employee():
     global employees
-    global id_counter
+    global eid_counter
     employee = emp.Employee()
-    employee.set_id(id_counter)
-    id_counter += 1
+    employee.set_id(eid_counter)
+    eid_counter += 1
     employee.set_first_name()
     employee.set_last_name()
     employee.set_join_date()
@@ -136,6 +149,25 @@ def list_employees():
         print(e)
     print()
 
+def add_department():
+    global departments
+    global did_counter
+    department = dep.Department()
+    department.set_id(did_counter)
+    did_counter += 1
+    department.set_name()
+    department.set_budget()
+    department.set_phone()
+    departments.append(department)
+    print(f"\nThe {department.get_name()} department (ID {department.get_id()}) was added.\n")
+
+def list_departments():
+    global company_name
+    print(f"\n{company_name} departments: \n")
+    for d in departments:
+        print(d)
+    print()
+
 while True:
     print(f"\nWelcome, {company_name}.\n")
     print("Please select a option:")
@@ -144,7 +176,7 @@ while True:
     print("3. Remove an employee")
     print("4. Show all employees")
     print("5. Add a new department")
-    print("6. Show department info")
+    print("6. Show all departments")
     print("7. Exit\n")
 
     try:
@@ -174,16 +206,21 @@ while True:
         list_employees()
 
     elif choice == 5:
-        print("to be implemented\n")
+        add_department()
 
     elif choice == 6:
-        print("to be implemented\n")
+        list_departments()
 
     else:
         with open("./employees.csv", "w") as f:
             f.write(company_name + "\n")
-            f.write(str(id_counter) + "\n")
+            f.write(str(eid_counter) + "\n")
             for e in employees:
                 f.write(f"{e.get_id()},{e.get_first_name()},{e.get_last_name()},{e.get_join_date()},{e.get_salary()},{e.get_department()}\n")
         print("\nEmployee info saved to file.\n")
+        with open("./departments.csv", "w") as f:
+            f.write(str(did_counter) + "\n")
+            for d in departments:
+                f.write(f"{d.get_id()},{d.get_name()},{d.get_budget()},{d.get_phone()}\n")
+        print("\nDepartment info saved to file.\n")
         break

@@ -1,11 +1,15 @@
 class Department:
-    def __init__(self, name, budget, phone):
+    def __init__(self, id=0, name="Department", budget=0, phone=""):
+        self.__id = id
         self.__name = name
         self.__budget = budget
         self.__phone = phone
     
     def __str__(self):
-        return f"{self.__name} has an annual budget of ${self.__budget}. Contact number: {self.__phone}."
+        return f"{self.__name} department has an annual budget of ${self.__budget}. Contact number: {self.__phone}."
+    
+    def set_id(self, id):
+        self.__id = id
     
     def set_name(self):
         while True:
@@ -46,8 +50,11 @@ class Department:
                 print("Phone must be 10 digits long.")
                 continue
             else:
-                self.__phone = phone
+                self.__phone = f"({phone[0]}{phone[1]}{phone[2]})-{phone[3]}{phone[4]}{phone[5]}-{phone[6]}{phone[7]}{phone[8]}{phone[9]}"
                 break
+
+    def get_id(self):
+        return self.__id
     
     def get_name(self):
         return self.__name
