@@ -6,7 +6,7 @@ class Department:
         self.__phone = phone
     
     def __str__(self):
-        return f"{self.__name} department has an annual budget of ${self.__budget}. Contact number: {self.__phone}."
+        return f"{self.__name} department. Annual budget: ${self.__budget}. Contact number: {self.__phone}."
     
     def set_id(self, id):
         self.__id = id
