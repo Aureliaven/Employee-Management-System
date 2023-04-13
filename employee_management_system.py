@@ -40,7 +40,11 @@ except io.UnsupportedOperation:
 
 def add_employee():
     global employees
+    global departments
     global eid_counter
+    if not departments:
+        print("\nYou must create a department first!\n")
+        return
     employee = emp.Employee()
     employee.set_id(eid_counter)
     eid_counter += 1
@@ -48,12 +52,43 @@ def add_employee():
     employee.set_last_name()
     employee.set_join_date()
     employee.set_salary()
-    employee.set_department()
+    while True:
+        print(f"Choose a department for {employee.get_first_name()} {employee.get_last_name()}: \n")
+        for d in departments:
+            print(f"{d.get_id()} - {d}")
+        print("# - Exit\n")
+        try:
+            d_id = input(": ")
+            if d_id == "#":
+                break
+            if not d_id.isnumeric():
+                raise ValueError
+            department = None
+            for d in departments:
+                if int(d_id) == d.get_id():
+                    department = d
+            if not department:
+                raise InvalidChoice
+        except InvalidChoice:
+            print("Invalid department id.\n")
+            continue
+        except ValueError:
+            print("Department id must be a number.\n")
+            continue
+        employee.set_department(department.get_name())
+        break
     employees.append(employee)
-    print(f"\n{employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}) was added.\n")
+    print(f"\n{employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}) was added to {department.get_name()}.\n")
 
 def update_employee():
     global employees
+    global departments
+    if not employees:
+        print("\nYou have no employees to update.\n")
+        return
+    if not departments:
+        print("\nYou must create a department first!\n")
+        return
     while True:
         print("\nWhich employee would you like to update?\n")
         for e in employees:
@@ -115,7 +150,13 @@ def update_employee():
 
 def remove_employee():
     global employees
+    if not departments:
+        print("\nYou must create a department first!\n")
+        return
     while True:
+        if not employees:
+            print("\nYou currently have no employees.\n")
+            return
         print("\nWhich employee would you like to remove?\n")
         for e in employees:
             print(f"{e.get_id()}. {e}")
@@ -142,6 +183,10 @@ def remove_employee():
 
 def list_employees():
     global company_name
+    global employees
+    if not employees:
+        print("\nYou have no employees to view.\n")
+        return
     print(f"\n{company_name} employees: \n")
     for e in employees:
         print(e)
@@ -161,6 +206,9 @@ def add_department():
 
 def update_department():
     global departments
+    if not departments:
+        print("\nYou have no departments to update.\n")
+        return
     while True:
         print("\nWhich department would you like to update?\n")
         for d in departments:
@@ -217,7 +265,11 @@ def update_department():
 
 def remove_department():
     global departments
+    global employees
     while True:
+        if not departments:
+            print("\nYou currently have no departments.\n")
+            return
         print("\nWhich department would you like to remove?\n")
         for d in departments:
             print(f"{d.get_id()} - {d}")
@@ -231,8 +283,35 @@ def remove_department():
             department = None
             for i in range(len(departments)):
                 if int(d_id) == departments[i].get_id():
-                    print(f"\n{departments[i].get_name()} was successfully removed.")
-                    department = departments.pop(i)
+                    department = departments[i]
+                    e_in_d = [e for e in employees if e.get_department() == department.get_name()]
+                    if e_in_d:
+                        print(f"\n{department.get_name()} has {len(e_in_d)} active employees. Are you sure you want to delete this department?\n")
+                        while True:
+                            try:
+                                response = str(input("(Y/N): "))
+                                if not response:
+                                    raise InvalidChoice
+                                elif not response.isalpha():
+                                    raise ValueError
+                                response = response.lower()
+                                if response != "y" and response != "n":
+                                    raise InvalidChoice
+                            except InvalidChoice:
+                                print("Choice must be Y or N.\n")
+                                continue
+                            except ValueError:
+                                print("Choice must be a letter.\n")
+                                continue
+                            if response == "y":
+                                eids = [eid.get_id() for eid in e_in_d]
+                                employees = [e for e in employees if e.get_id() not in eids]
+                                print(f"\nEmployees of the {department.get_name()} department were removed.")
+                                print(f"\n{department.get_name()} was successfully removed.")
+                                departments.pop(i)
+                            elif response == "n":
+                                break
+                            break
                     break
             if not department:
                 raise InvalidChoice
@@ -241,13 +320,44 @@ def remove_department():
             continue
         except ValueError:
             print("Department id must be a number.\n")
+            continue
 
 def list_departments():
     global company_name
+    global departments
+    global employees
+    if not departments:
+        print("\nYou have no departments to view.\n")
+        return
     print(f"\n{company_name} departments: \n")
-    for d in departments:
-        print(d)
-    print()
+    while True:
+        print("Which department would you like to view?\n")
+        for d in departments:
+            print(f"{d.get_id()} - {d}")
+        print("# - Exit\n")
+        try:
+            d_id = input(": ")
+            if d_id == "#":
+                break
+            if not d_id.isnumeric():
+                raise ValueError
+            department = None
+            for d in departments:
+                if int(d_id) == d.get_id():
+                    department = d
+            if not department:
+                raise InvalidChoice
+        except InvalidChoice:
+            print("Invalid department id.\n")
+            continue
+        except ValueError:
+            print("Department id must be a number.\n")
+            continue
+        print(f"\nEmployees in {department.get_name()}:\n")
+        e_in_d = [e for e in employees if e.get_department() == department.get_name()]
+        for i in e_in_d:
+            print(i)
+        print()
 
 while True:
     print(f"\nWelcome, {company_name}.\n")

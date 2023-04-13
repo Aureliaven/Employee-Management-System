@@ -1,3 +1,5 @@
+import re
+
 class Department:
     def __init__(self, id=0, name="Department", budget=0, phone=""):
         self.__id = id
@@ -17,7 +19,7 @@ class Department:
             if not name:
                 print("Name cannot be empty.")
                 continue
-            if not name.isalpha():
+            if not re.search("^[A-Za-z ]+$", name):
                 print("Name cannot contain numbers or symbols!")
                 continue
             else:
