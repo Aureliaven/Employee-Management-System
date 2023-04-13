@@ -80,7 +80,3 @@ class Login:
         return self.__password
     def get_access(self):
         return self.__access
-
-user = Login("user", "password", "user")
-user.createAdmin()
-print(user.userLogin())
