@@ -16,7 +16,7 @@ class Login:
             try:
                 if not re.search("^[A-Za-z]+$", user) and len(user) > 16:
                     print("Invalid username")
-                elif len(password) < 7 or len(password) > 20:
+                elif len(password) < 8 or len(password) > 30:
                     print("Invalid password")
                 else:
                     self.__user = user
@@ -36,7 +36,7 @@ class Login:
             try:
                 if not re.search("^[A-Za-z]+$", user) and len(user) > 16:
                     print("Invalid username")
-                elif not re.search("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$", password):
+                elif not re.search("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,30}$", password):
                     print("Invalid password")
                 else:
                     self.__user = user
@@ -80,3 +80,6 @@ class Login:
         return self.__password
     def get_access(self):
         return self.__access
+
+user = Login("", "", "")
+print(user.createAdmin())
