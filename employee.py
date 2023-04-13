@@ -1,4 +1,5 @@
 import datetime
+import re
 
 class Employee:
     def __init__(self, id=0, first_name="First", last_name="Last", join_date="Date", salary=0, department="Department"):
@@ -21,8 +22,8 @@ class Employee:
             if not first_name:
                 print("Name cannot be empty!")
                 continue
-            if not first_name.isalpha():
-                print("Name cannot contain numbers or symbols!")
+            if not re.search("^[A-Za-z-']+$", first_name):
+                print("Name cannot contain spaces, numbers, or symbols! (except - and ')")
                 continue
             else:
                 self.__first_name = first_name
@@ -34,8 +35,8 @@ class Employee:
             if not last_name:
                 print("Name cannot be empty!")
                 continue
-            if not last_name.isalpha():
-                print("Name cannot contain numbers or symbols!")
+            if not re.search("^[A-Za-z-']+$", last_name):
+                print("Name cannot contain spaces, numbers, or symbols! (except - and ')")
                 continue
             else:
                 self.__last_name = last_name
@@ -58,18 +59,8 @@ class Employee:
                 self.__salary = salary
                 break
 
-    def set_department(self):
-        while True:
-            department = input("Employee department: ")
-            if not department:
-                print("Department cannot be empty!")
-                continue
-            if not department.isalpha():
-                print("Department cannot contain numbers or symbols!")
-                continue
-            else:
-                self.__department = department
-                break
+    def set_department(self, department):
+        self.__department = department
 
     def get_id(self):
         return self.__id
