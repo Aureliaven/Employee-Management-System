@@ -62,7 +62,7 @@ class Login:
                     print("Too many attempts!")
                     #nextvalidAttempt = today + datetime.timedelta(days=1)
                     validAttempt = False
-                    return False
+                    return ""
                 #if counter >= 5 #and today < nextvalidAttempt:
                     #print("Too many attempts, please try again tomorrow!")
                     #return False
@@ -81,5 +81,6 @@ class Login:
     def get_access(self):
         return self.__access
 
-user = Login("", "", "")
-print(user.createAdmin())
+user = Login("user", "password", "user")
+user.createAdmin()
+print(user.userLogin())
