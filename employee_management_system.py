@@ -235,6 +235,7 @@ def update_department():
             continue
         except ValueError:
             print("Department id must be a number.\n")
+            continue
         
         while True:
             print("\nPlease select a option:")
@@ -316,6 +317,9 @@ def remove_department():
                             elif response == "n":
                                 break
                             break
+                    else:
+                        print(f"\n{department.get_name()} was successfully removed.")
+                        departments.pop(i)
                     break
             if not department:
                 raise InvalidChoice
