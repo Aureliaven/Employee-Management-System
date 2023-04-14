@@ -38,20 +38,8 @@ except FileNotFoundError:
 except io.UnsupportedOperation:
     print("Something went wrong :/\n")
 
-def add_employee():
-    global employees
+def set_emp_dep(employee: emp.Employee):
     global departments
-    global eid_counter
-    if not departments:
-        print("\nYou must create a department first!\n")
-        return
-    employee = emp.Employee()
-    employee.set_id(eid_counter)
-    eid_counter += 1
-    employee.set_first_name()
-    employee.set_last_name()
-    employee.set_join_date()
-    employee.set_salary()
     while True:
         print(f"Choose a department for {employee.get_first_name()} {employee.get_last_name()}: \n")
         for d in departments:
@@ -76,9 +64,25 @@ def add_employee():
             print("Department id must be a number.\n")
             continue
         employee.set_department(department.get_name())
+        print(f"\n{employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}) was added to {department.get_name()}.\n")
         break
+
+def add_employee():
+    global employees
+    global departments
+    global eid_counter
+    if not departments:
+        print("\nYou must create a department first!\n")
+        return
+    employee = emp.Employee()
+    employee.set_id(eid_counter)
+    eid_counter += 1
+    employee.set_first_name()
+    employee.set_last_name()
+    employee.set_join_date()
+    employee.set_salary()
+    set_emp_dep(employee)
     employees.append(employee)
-    print(f"\n{employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}) was added to {department.get_name()}.\n")
 
 def update_employee():
     global employees
@@ -146,7 +150,7 @@ def update_employee():
 
             elif choice == 4:
                 print(f"\nSetting new department for {employee.get_first_name()} {employee.get_last_name()} (ID {employee.get_id()}).")
-                employee.set_department()
+                set_emp_dep(employee)
 
 def remove_employee():
     global employees
@@ -159,8 +163,8 @@ def remove_employee():
             return
         print("\nWhich employee would you like to remove?\n")
         for e in employees:
-            print(f"{e.get_id()}. {e}")
-        print("#. Exit\n")
+            print(f"{e.get_id()} - {e}")
+        print("# - Exit\n")
         try:
             e_id = input(": ")
             if e_id == "#":
